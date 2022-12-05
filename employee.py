@@ -23,6 +23,15 @@ Private_key = "/home/pi/IOT/private_key/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e579ac
 Cert_File = "/home/pi/IOT/device_authentication/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e579ac172d8bcc7bb8f4d04b627af0-certificate.pem.crt"
 
 
+#for location with UWB
+locuuid = btle.UUID("680c21d9-c946-4c1f-9c11-baa1c21329e7")
+readdata = btle.UUID("003bbdf2-c634-4b3d-ab56-7ec889b89a37")
+locService = dev.getServiceByUUID(locuuid)
+n_id = [0]*3
+n_dis = [0]*3
+ch = locService.getCharacteristics(readdata)[0]
+
+
 # Employee (직원)
 # 직원에게는 호출 승인 , 호출 거절 버튼 2개 존재
 
