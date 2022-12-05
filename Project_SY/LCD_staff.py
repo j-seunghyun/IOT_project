@@ -1,66 +1,68 @@
 import time
 import I2C_LCD_driver
+from threading import Thread
 
 mylcd = I2C_LCD_driver.lcd()
+staff_id = 1 #직원 id = 1
 
-mylcd.lcd_display_string("WAITING FOR THE",1,0)
-mylcd.lcd_display_string("CALL",2,3)
+#매칭이 되는 과정 추가 필요
 
-time.sleep(3)
-    
-mylcd.lcd_clear()
+situation = 0 # 임의의 상황 부여
 
-#mqtt input
-situation = 0
 
 while True:
-    if situation == 0:
-        mylcd.lcd_display_string("CONSUMER NEED",1,0)
-        mylcd.lcd_display_string("PRODUCT HELP Y/N",2,0)
+    mylcd.lcd_display_string("WAITING THE CALL",1,0)
+    mylcd.lcd_display_string("STAFF ID: " + str(staff_id) ,2,3)
 
-        button = input("원하시는 버튼을 누르세요: 0:yes 1:no")
+    time.sleep(3)
+
+    check_id = input("현재 직원번호 1 \n check_id를 누르세요: ")
+    print(check_id)
+    check_id = int(check_id)
+    #check_id = 1
+    mylcd.lcd_clear()
+
+    if staff_id == check_id:
+        if situation == 0:
+            mylcd.lcd_display_string("CONSUMER  NEED",1,1)
+            mylcd.lcd_display_string("PRODUCT HELP ",2,2)
+
+            time.sleep(5)
+            mylcd.lcd_clear()
+
+        elif situation == 1:
+            mylcd.lcd_display_string("CONSUMER NEED",1,0)
+            mylcd.lcd_display_string("PLACE HELP ",2,0)
+
+            time.sleep(5)
+            mylcd.lcd_clear()
+
+        elif situation == 2:
+            mylcd.lcd_display_string("EMERGENCY CALL",1,1)
+
+            time.sleep(5)
+            mylcd.lcd_clear()
+
+        #mqtt로 시간 계산 들어와서 알려주기
+        mint = 1 #분 단위
+
+        mylcd.lcd_display_string("TIME TO CONSUMER",1,0)
+        mylcd.lcd_display_string("IS " + str(mint) + " MIN",2,4)
+
+        #timeout 시스템
+        arrive_time = int(mint) * 60
+        button = None
+
+        def check():
+            time.sleep(arrive_time)
+            if button != None:
+                return
+            mylcd.lcd_clear()
+            mylcd.lcd_display_string("NOW YOU SHOULD ",1,1)
+            mylcd.lcd_display_string("BE ARRIVED",2,3)
+                
+        Thread(target = check).start()
+
+        button = input("마무리 버튼을 누르세요: ")
         print(button)
-        button = int(button)
-
-        mylcd.lcd_clear()
-
-        if button == 0:
-            #mqtt agree
-        else:
-            #mqtt disagree
-
-    elif situation == 1:
-        mylcd.lcd_display_string("CONSUMER NEED",1,0)
-        mylcd.lcd_display_string("PLACE HELP Y/N",2,0)
-
-        button = input("원하시는 버튼을 누르세요: 0:yes 1:no")
-        print(button)
-        button = int(button)
-
-        mylcd.lcd_clear()
-
-        if button == 0:
-            #mqtt agree
-        else:
-            #mqtt disagree
-
-    elif situation == 2:
-        mylcd.lcd_display_string("EMERGENCY CALL",1,1)
-
-        time.sleep(5)
-
-        mylcd.lcd_clear()
-
-        #mqtt disagree
-    
-    dist = 500
-
-    mylcd.lcd_display_string("DISTANCE TO",1,0)
-    mylcd.lcd_display_string("CONSUMER" + str(dist) + "m",2,0)
-
-    button = input("마무리 버튼을 누르세요: 9:Fin")
-    print(button)
-    button = int(button)
-
-    if button == 9:
-        mylcd.lcd_clear()
+        Button = int(button)
