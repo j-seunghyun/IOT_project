@@ -5,7 +5,7 @@ import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
 
 id=1
 Client_ID = "employee:id"
-Thing_Name = "guest:${id}"
+Thing_Name = f"guest:{id}"
 Host_Name = "a1xvayn1nylqw4-ats.iot.ap-northeast-1.amazonaws.com"
 Root_CA = "/home/pi/IOT/root_CA1/AmazonRootCA1.crt"
 Private_key = "/home/pi/IOT/private_key/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e579ac172d8bcc7bb8f4d04b627af0-private.pem.key" 
@@ -26,7 +26,7 @@ def customCallback(client, userdata, message):
   print("----------------\n\n")
   messages = json.loads(message.payload)
   print(messages['client_id'])
-  print(message['location'])
+  print(messages['location'])
 
 
 Client.subscribe(Thing_Name, 1, customCallback)

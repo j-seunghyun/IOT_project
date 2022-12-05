@@ -21,9 +21,9 @@ Client.connect()
 loopCount =0
 while True:
   message = {}
-  message['client_id'] = id
+  message['client_id'] = [1,2,3]
   print(message)
-  message['location'] = '(170.2, 342.3)'
+  message['location'] = [170.2, 342.3]
   messageJson = json.dumps(message)
 
   Client.publish(Thing_Name,messageJson,1)

@@ -21,7 +21,6 @@ def lambda_handler(event, context):
         FilterExpression=Attr("state").eq('wait')
     )
     
-    
     # TODO implement
     response = {
         'statusCode': 200,

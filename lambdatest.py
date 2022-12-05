@@ -16,6 +16,6 @@ async def req():
 
 def main():
   employeelist = asyncio.run(req())
-  print(employeelist[0]['id'])
+  print(employeelist['id'])
 
 main()
