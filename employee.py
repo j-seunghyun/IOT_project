@@ -94,6 +94,7 @@ def calcDistance(client_location, p_array):
     distance = math.sqrt(a**2+b**2)
     return distance
 
+"""
 def LCD(situation):
   if situation == 0:
         #mylcd.lcd_display_string("CONSUMER  NEED",1,1)
@@ -110,35 +111,55 @@ def LCD(situation):
   elif situation == 2:
       #mylcd.lcd_display_string("EMERGENCY CALL",1,1)
       print("EMERGENCY CALL")
-
+"""
 
 def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
   client_location = []
 
   #mylcd.lcd_display_string("WAITING THE CALL",1,0)
-  print("WAITING THE CALL")
   #mylcd.lcd_display_string("STAFF ID: " + str(id) ,2,3)
+  print("----------------------")
+  print("WAITING THE CALL")
   print("STAFF ID: " + str(id))
+  print("----------------------")
   Client.subscribe(Guest_Thing_Name, 1, customCallback) #guest 주소 알수있음 (이것이 진행을 안해서 distance가 들어오지 않는 것)
 
-  print("ok")
   while True:
+    start = time.time()
+    
     dev = setLocationUwb()
     p_array = findLocation(dev)
-    print("client_location:",client_location)
-    print("p_array", p_array)
+    #print("client_location:",client_location)
     distance = calcDistance(client_location, p_array) #client location = null이면 0
-
-    print("distance: " , distance)
-    print(float(distance))
     #distance를 회귀분석이 담긴 dynamodb에 request해서
     #response로 예상 time을 받아온다.
     
     ###lcd화면에 예상 시간과 손님 위치 출력
+    """
     situation = 0 # 임의의 상황 부여
     LCD(situation)
-    print("fin")
+    time.sleep(2)
+    """
+
+    #mylcd.lcd_display_string("TIME TO CONSUMER",1,0)
+    #mylcd.lcd_display_string("IS " + str(mint) + " MIN",2,4)
+    print("----------------------")
+    print("DIST TO CONSUMER")
+    print("IS " + str(distance) + " M")
+    print("----------------------")
+
+    button = input("마무리 버튼(0)을 누르세요: \n")
+    print(button)
+    Button = int(button)
+
+    end = time.time()
+    thetime = end - start
+    print("Time Taken", f"{thetime:.5f} sec")
+
+    print("finish")
 
     time.sleep(5)
 
 main()
+          
+    #끝나는 시간 보내주면 Lambda post to dynamodb -> linearRegression
