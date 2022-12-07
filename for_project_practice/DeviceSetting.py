@@ -6,8 +6,8 @@ import time
 MAC_array = ['E1:75:93:A0:B3:E0', 'E9:15:4A:CB:C0:80', 'E8:67:EA:81:5A:6B',
 'F1:B4:EF:3F:74:DF', 'DE:16:DB:BA:11:A1']
 
-pos_x = [0,1000,500]
-pos_y = [0,0,500]
+pos_x = [0,4000,2000]
+pos_y = [0,0,2000]
 pos_z = [0,0,0]
 
 count = 0

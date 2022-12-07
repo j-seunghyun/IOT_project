@@ -13,7 +13,6 @@ from threading import Thread
 
 id = 1
 mylcd = I2C_LCD_driver.lcd()
-client_location = []
 
 #for MQTT
 Client_ID = "employee:id"
@@ -70,36 +69,52 @@ def findLocation(dev):
   y_post = y_pos/1000
   z_pos = struct.unpack('<i', z_pos)[0]
   z_pos = z_pos/1000
-
+  dev.disconnect()
   position_array = [x_pos, y_pos]
+
   return position_array
 
 
 def customCallback(Client, userdata, message):
   messages = json.loads(message.payload)
-  print(messages['employee_id'])
-  print(messages['location'])
   client_location = messages['location']
-  print("before return ", client_location)
-  #return client_location
+  print("client_location = ", client_location)
+
+def on_message(client, userdata, message):
+   client_location = message['location']
 
 def calcDistance(client_location, p_array):
   # client_location list가 비어 있을때는 0return
   # 거리는 root(a^2+b^2)
-
-  print(client_location)
-  print(p_array[0])
-  print(p_array[1])
-
   if not client_location:
-    return 0
+    return 200
   else:
     a = client_location[0]- p_array[0]
     b = client_location[1]-p_array[1]
     distance = math.sqrt(a**2+b**2)
     return distance
 
+def LCD(situation):
+  if situation == 0:
+        #mylcd.lcd_display_string("CONSUMER  NEED",1,1)
+        #mylcd.lcd_display_string("PRODUCT HELP ",2,2)
+      print("CONSUMER  NEED")
+      print("PRODUCT HELP")
+
+  elif situation == 1:
+      #mylcd.lcd_display_string("CONSUMER NEED",1,0)
+      #mylcd.lcd_display_string("PLACE HELP ",2,0)
+      print("CONSUMER NEED")
+      print("PLACE HELP")
+
+  elif situation == 2:
+      #mylcd.lcd_display_string("EMERGENCY CALL",1,1)
+      print("EMERGENCY CALL")
+
+
 def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
+  client_location = []
+
   #mylcd.lcd_display_string("WAITING THE CALL",1,0)
   print("WAITING THE CALL")
   #mylcd.lcd_display_string("STAFF ID: " + str(id) ,2,3)
@@ -111,6 +126,7 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     dev = setLocationUwb()
     p_array = findLocation(dev)
     print("client_location:",client_location)
+    print("p_array", p_array)
     distance = calcDistance(client_location, p_array) #client location = null이면 0
 
     print("distance: " , distance)
@@ -119,71 +135,10 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     #response로 예상 time을 받아온다.
     
     ###lcd화면에 예상 시간과 손님 위치 출력
-    
     situation = 0 # 임의의 상황 부여
-
-    time.sleep(3)
-    mylcd.lcd_clear()
-    start = time.time()
-    if situation == 0:
-        #mylcd.lcd_display_string("CONSUMER  NEED",1,1)
-        #mylcd.lcd_display_string("PRODUCT HELP ",2,2)
-        print("CONSUMER  NEED")
-        print("PRODUCT HELP")
-
-    elif situation == 1:
-        #mylcd.lcd_display_string("CONSUMER NEED",1,0)
-        #mylcd.lcd_display_string("PLACE HELP ",2,0)
-        print("CONSUMER NEED")
-        print("PLACE HELP")
-
-    elif situation == 2:
-        #mylcd.lcd_display_string("EMERGENCY CALL",1,1)
-        print("EMERGENCY CALL")
+    LCD(situation)
+    print("fin")
 
     time.sleep(5)
-    #mylcd.lcd_clear()
-
-    #mqtt로 시간 계산 들어와서 알려주기
-    mint = 1 #분 단위
-
-    #mylcd.lcd_display_string("TIME TO CONSUMER",1,0)
-    #mylcd.lcd_display_string("IS " + str(mint) + " MIN",2,4)
-    print("TIME TO CONSUMER")
-    print("IS " + str(mint) + " MIN")
-
-    #timeout 시스템
-    arrive_time = int(mint) * 60
-    button = None
-                    
-    def check():
-      time.sleep(arrive_time)
-      if button != None:
-        return
-      #mylcd.lcd_clear()
-      #mylcd.lcd_display_string("NOW YOU SHOULD ",1,1)
-      #mylcd.lcd_display_string("BE ARRIVED",2,3)
-      print("NOW YOU SHOULD ")
-      print("BE ARRIVED")
-
-    Thread(target = check).start()
-
-
-    button = input("도착 버튼을 누르세요: ")
-    print(button)
-    Button = int(button)
-            
-    end = time.time()
-    thetime = end - start
-    print(f"{thetime:.5f} sec")
-
-    button = input("마무리 버튼을 누르세요: ")
-    print(button)
-    Button = int(button)
-
-    #끝나는 시간 보내주면
-
-    time.sleep(10)
-
 
 main()
