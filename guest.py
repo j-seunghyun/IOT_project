@@ -215,7 +215,6 @@ def main():
       #wait중인 employee중 현재 손님과 가장 가까운 employee_id
       employee_id = scanNearEmployee(employee_id_list)
 
-      
       W, b = linearRegression()
       time.sleep(3)
             
@@ -231,6 +230,8 @@ def main():
         #변경되는 location 정보를 MQTT로 모두 보내준다.
         subscribeLocation(employee_id, p_array)
 
+
+        #get distance가 들어가야 한다.
         #거리정보...
         distance = 200
         # lambda로 linearRegression을 통해 시간(분) 계산

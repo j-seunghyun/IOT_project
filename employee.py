@@ -23,13 +23,16 @@ Private_key = "/home/pi/project/private_key/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e5
 Cert_File = "/home/pi/project/device_authentication/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e579ac172d8bcc7bb8f4d04b627af0-certificate.pem.crt"
 
 Client = AWSIoTPyMQTT.AWSIoTMQTTClient(Client_ID)
-shadow_device = AWSIoTPyMQTT.AWsIOTMQTTShadowClient(Client_ID, useWebsocket = True)
-my_shadow = shadow_device.deviceShadow("pi", isPersistentSubscribe, self)
 Client.configureEndpoint(Host_Name, 8883)
 Client.configureCredentials(Root_CA, Private_key, Cert_File)
 Client.configureConnectDisconnectTimeout(10)
 Client.configureMQTTOperationTimeout(5)
 Client.connect()
+
+
+postHostUrl = "https://vj0cs4f7o9.execute-api.ap-northeast-1.amazonaws.com/default"
+
+client_location = []
 
 
 #employee에서의 uwb setup
@@ -77,28 +80,29 @@ def findLocation(dev):
   return position_array
 
 
+async def post_distance(distance):
+  #calc 함수에서 계산한 distance를 post
+  response = await requests.post(postHostUrl, data=distance, headers=None)
+
 def customCallback(Client, userdata, message):
   messages = json.loads(message.payload)
-  client_location_x = messages['location'][0]
-  client_location_y = messages['location'][1]
+  client_location.append(messages['location'])
   
   print("----------------------")
   print("CLIENT IS AT")
   print("[X,Y] = " + str(client_location)) #
   print("----------------------")
 
-def on_message(client, userdata, message):
-  messages = json.loads(message.payload)
-  client_location = messages['location']
-
-def calcDistance(client_location, p_array):
+async def calcDistance(client_location, p_array):
   # client_location list가 비어 있을때는 0return
   # 거리는 root(a^2+b^2)
+
   if not client_location:
-    return 200
+    return 0
   else:
-    a = client_location[0]- p_array[0]
-    b = client_location[1]-p_array[1]
+    current_client_location = client_location[-1]
+    a = current_client_location[0]- p_array[0]
+    b = current_client_location[1]-p_array[1]
     distance = math.sqrt(a**2+b**2)
     return distance
 
@@ -138,10 +142,14 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     
     dev = setLocationUwb()
     p_array = findLocation(dev)
-    print("client_location:",client_location_x, client_location_y)
-    distance = calcDistance(client_location, p_array) #client location = null이면 0
-    #distance를 회귀분석이 담긴 dynamodb에 request해서
-    #response로 예상 time을 받아온다.
+    
+
+    #distance계산이 된 다음에 post시킬 수 있도록 async
+    distance = asyncio.run(calcDistance(client_location, p_array)) #client location = null이면 0
+
+    #distance post시키는 함수
+    if distance != 0:
+      asyncio.run(post(distance))
     
     ###lcd화면에 예상 시간과 손님 위치 출력
     """
