@@ -229,20 +229,20 @@ def main():
         subscribeLocation(employee_id, p_array)
 
         #거리정보...
-        distance = 500
+        distance = 200
         # lambda로 linearRegression을 통해 시간(분) 계산
         mint = gettime(distance) 
         
         ##lcd 코드
         mylcd.lcd_clear()
 
+        time.sleep(5)
         
         mylcd.lcd_display_string("STAFF IS COMING",1,0)
         mylcd.lcd_display_string("WAIT FOR " + str(mint) + " MIN",2,0)
 
-        time.sleep(10)
+        time.sleep(mint * 10)
         mylcd.lcd_clear()
 
 
 main()
-

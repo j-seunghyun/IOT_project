@@ -78,7 +78,11 @@ def findLocation(dev):
 def customCallback(Client, userdata, message):
   messages = json.loads(message.payload)
   client_location = messages['location']
-  print("client_location = ", client_location)
+  
+  print("----------------------")
+  print("CLIENT IS AT")
+  print("[X,Y] = " + str(client_location)) #
+  print("----------------------")
 
 def on_message(client, userdata, message):
    client_location = message['location']
@@ -144,21 +148,26 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     #mylcd.lcd_display_string("TIME TO CONSUMER",1,0)
     #mylcd.lcd_display_string("IS " + str(mint) + " MIN",2,4)
     print("----------------------")
-    print("DIST TO CONSUMER")
-    print("IS " + str(distance) + " M")
+    print("EMPLOYEE IS AT")
+    print("[X,Y] = " + str(p_array)) #
     print("----------------------")
 
-    button = input("마무리 버튼(0)을 누르세요: \n")
-    print(button)
-    Button = int(button)
+    button = input("마무리 버튼(1)을 누르세요: \n")
 
-    end = time.time()
-    thetime = end - start
-    print("Time Taken", f"{thetime:.5f} sec")
+    if button == 1:
+      end = time.time()
+      thetime = end - start
+      sys.exit(0)
+      """
+    else:
+      print("버튼 (1)을 눌려주세요")
+      button = input("\n")
+      """
+    
+    #print("Time Taken", f"{thetime:.5f} sec")
 
-    print("finish")
 
-    time.sleep(5)
+    time.sleep(10)
 
 main()
           
