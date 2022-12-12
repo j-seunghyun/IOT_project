@@ -23,6 +23,7 @@ Private_key = "/home/pi/project/private_key/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e5
 Cert_File = "/home/pi/project/device_authentication/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e579ac172d8bcc7bb8f4d04b627af0-certificate.pem.crt"
 
 Client = AWSIoTPyMQTT.AWSIoTMQTTClient(Client_ID)
+shadow_device = AWSIoTPyMQTT.AWsIOTMQTTShadowClient(Client_ID, useWebsocket = True)
 Client.configureEndpoint(Host_Name, 8883)
 Client.configureCredentials(Root_CA, Private_key, Cert_File)
 Client.configureConnectDisconnectTimeout(10)
@@ -128,7 +129,7 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
   print("STAFF ID: " + str(id))
   print("----------------------")
   Client.subscribe(Guest_Thing_Name, 1, customCallback) #guest 주소 알수있음 (이것이 진행을 안해서 distance가 들어오지 않는 것)
-  Client.onMessage = on_message
+  shadow_device.shadowGet(customCallback, 10)
 
   while True:
     start = time.time()
