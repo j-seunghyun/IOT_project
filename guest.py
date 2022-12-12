@@ -44,7 +44,7 @@ async def req():
   return waitEmployeeList
 
 async def req_distance():
-  response = await requests.get(getDistanceUrl,params=None)
+  response = await request.get(getDistanceUrl,params=None)
   distance = json.loads(response.content)
   return distance
 # guest (손님)
@@ -225,8 +225,7 @@ def main():
             
       
       while True:
-        mylcd.lcd_display_string("WEL-COME TO OUR",1,0)
-        mylcd.lcd_display_string("MARKET",2,5)
+        
         #가장 가까운 employee에게 자신의 위치 계속 mqtt로 publishing
         dev = setLocationUwb()
         p_array = findLocation(dev)
@@ -244,15 +243,14 @@ def main():
         mint = gettime(W,b, distance)
         
         ##lcd 코드
-        mylcd.lcd_clear()
-
-        time.sleep(5)
         
+
+        mylcd.lcd_clear()
         mylcd.lcd_display_string("STAFF IS COMING",1,0)
         mylcd.lcd_display_string("WAIT FOR " + str(mint) + " MIN",2,0)
 
-        time.sleep(mint * 10)
-        mylcd.lcd_clear()
+        time.sleep(mint)
+        
 
 
 main()

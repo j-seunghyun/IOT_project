@@ -2,6 +2,7 @@ from bluepy import btle
 import binascii
 import struct
 import time
+import math
 import json
 import AWSIoTPythonSDK.MQTTLib as AWSIoTPyMQTT
 from datetime import datetime
@@ -82,7 +83,7 @@ def findLocation(dev):
 
 async def post_distance(distance,current_index):
   #calc 함수에서 계산한 distance를 post
-  datas = dict(index = current_index, distance = 200)
+  datas = dict(index = current_index, distance = int(distance))
   response = await requests.post(postHostUrl, data=datas, headers=None)
   data = json.loads(response.content)
   return data
@@ -110,32 +111,12 @@ async def calcDistance(client_location, p_array):
     distance = math.sqrt(a**2+b**2)
     return distance
 
-"""
-def LCD(situation):
-  if situation == 0:
-        #mylcd.lcd_display_string("CONSUMER  NEED",1,1)
-        #mylcd.lcd_display_string("PRODUCT HELP ",2,2)
-      print("CONSUMER  NEED")
-      print("PRODUCT HELP")
-
-  elif situation == 1:
-      #mylcd.lcd_display_string("CONSUMER NEED",1,0)
-      #mylcd.lcd_display_string("PLACE HELP ",2,0)
-      print("CONSUMER NEED")
-      print("PLACE HELP")
-
-  elif situation == 2:
-      #mylcd.lcd_display_string("EMERGENCY CALL",1,1)
-      print("EMERGENCY CALL")
-"""
 
 def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
 
-  client_location_x = 0
-  client_location_y = 0
+  
   current_index = 0
-  #mylcd.lcd_display_string("WAITING THE CALL",1,0)
-  #mylcd.lcd_display_string("STAFF ID: " + str(id) ,2,3)
+  
   print("----------------------")
   print("WAITING THE CALL")
   print("STAFF ID: " + str(id))
@@ -163,24 +144,7 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
       current_index = current_index+1
       print(response)
     
-    ###lcd화면에 예상 시간과 손님 위치 출력
-    """
-    situation = 0 # 임의의 상황 부여
-    LCD(situation)
-    time.sleep(2)
-    """
-
-    #mylcd.lcd_display_string("TIME TO CONSUMER",1,0)
-    #mylcd.lcd_display_string("IS " + str(mint) + " MIN",2,4)
-
-    """
-    button = input("마무리 버튼(1)을 누르세요: \n")
-
-    if button == 1:
-      end = time.time()
-      thetime = end - start
-      sys.exit(0)
-    """
+    
 
 
     time.sleep(3)
