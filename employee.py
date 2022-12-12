@@ -30,7 +30,7 @@ Client.configureMQTTOperationTimeout(5)
 Client.connect()
 
 
-postHostUrl = "https://vj0cs4f7o9.execute-api.ap-northeast-1.amazonaws.com/default"
+postHostUrl = "https://0kyzkkrvkg.execute-api.ap-northeast-1.amazonaws.com/default/post/distance"
 
 client_location = []
 
