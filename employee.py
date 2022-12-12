@@ -80,9 +80,12 @@ def findLocation(dev):
   return position_array
 
 
-async def post_distance(distance):
+async def post_distance(distance,current_index):
   #calc 함수에서 계산한 distance를 post
-  response = await requests.post(postHostUrl, data=distance, headers=None)
+  datas = dict(index = current_index, distance = 200)
+  response = await requests.post(postHostUrl, data=datas, headers=None)
+  data = json.loads(response.content)
+  return data
 
 def customCallback(Client, userdata, message):
   messages = json.loads(message.payload)
@@ -130,6 +133,7 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
 
   client_location_x = 0
   client_location_y = 0
+  current_index = 0
   #mylcd.lcd_display_string("WAITING THE CALL",1,0)
   #mylcd.lcd_display_string("STAFF ID: " + str(id) ,2,3)
   print("----------------------")
@@ -143,6 +147,11 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     
     dev = setLocationUwb()
     p_array = findLocation(dev)
+
+    print("----------------------")
+    print("EMPLOYEE IS AT")
+    print("[X,Y] = " + str(p_array)) #
+    print("----------------------")
     
 
     #distance계산이 된 다음에 post시킬 수 있도록 async
@@ -150,7 +159,8 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
 
     #distance post시키는 함수
     if distance != 0:
-      asyncio.run(post(distance))
+      asyncio.run(post_distance(distance, current_index))
+      current_index = current_index+1
     
     ###lcd화면에 예상 시간과 손님 위치 출력
     """
@@ -161,10 +171,6 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
 
     #mylcd.lcd_display_string("TIME TO CONSUMER",1,0)
     #mylcd.lcd_display_string("IS " + str(mint) + " MIN",2,4)
-    print("----------------------")
-    print("EMPLOYEE IS AT")
-    print("[X,Y] = " + str(p_array)) #
-    print("----------------------")
 
     """
     button = input("마무리 버튼(1)을 누르세요: \n")
