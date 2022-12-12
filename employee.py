@@ -92,6 +92,7 @@ def customCallback(Client, userdata, message):
   print("CLIENT IS AT")
   print("[X,Y] = " + str(client_location)) #
   print("----------------------")
+  
 
 async def calcDistance(client_location, p_array):
   # client_location list가 비어 있을때는 0return
@@ -142,6 +143,7 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     
     dev = setLocationUwb()
     p_array = findLocation(dev)
+<<<<<<< HEAD
     
 
     #distance계산이 된 다음에 post시킬 수 있도록 async
@@ -150,6 +152,13 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     #distance post시키는 함수
     if distance != 0:
       asyncio.run(post(distance))
+=======
+    print("client_location:",client_location_x, client_location_y)
+    print(client_location)
+    #distance = calcDistance(client_location, p_array) #client location = null이면 0
+    #distance를 회귀분석이 담긴 dynamodb에 request해서
+    #response로 예상 time을 받아온다.
+>>>>>>> 3037f3b5df731d8c0cce871670a9062ea9595e45
     
     ###lcd화면에 예상 시간과 손님 위치 출력
     """
@@ -165,22 +174,17 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     print("[X,Y] = " + str(p_array)) #
     print("----------------------")
 
+    """
     button = input("마무리 버튼(1)을 누르세요: \n")
 
     if button == 1:
       end = time.time()
       thetime = end - start
       sys.exit(0)
-      """
-    else:
-      print("버튼 (1)을 눌려주세요")
-      button = input("\n")
-      """
-    
-    #print("Time Taken", f"{thetime:.5f} sec")
+    """
 
 
-    time.sleep(10)
+    time.sleep(3)
 
 main()
           
