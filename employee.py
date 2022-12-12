@@ -23,8 +23,6 @@ Private_key = "/home/pi/project/private_key/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e5
 Cert_File = "/home/pi/project/device_authentication/1ec7bb53fbf4890b391e5d0af3a3a2ffb7e579ac172d8bcc7bb8f4d04b627af0-certificate.pem.crt"
 
 Client = AWSIoTPyMQTT.AWSIoTMQTTClient(Client_ID)
-shadow_device = AWSIoTPyMQTT.AWsIOTMQTTShadowClient(Client_ID, useWebsocket = True)
-my_shadow = shadow_device.deviceShadow("pi", isPersistentSubscribe, self)
 Client.configureEndpoint(Host_Name, 8883)
 Client.configureCredentials(Root_CA, Private_key, Cert_File)
 Client.configureConnectDisconnectTimeout(10)
@@ -77,15 +75,17 @@ def findLocation(dev):
   return position_array
 
 
+client_location = []
+
 def customCallback(Client, userdata, message):
   messages = json.loads(message.payload)
-  client_location_x = messages['location'][0]
-  client_location_y = messages['location'][1]
+  client_location.append(messages['location'])
   
   print("----------------------")
   print("CLIENT IS AT")
   print("[X,Y] = " + str(client_location)) #
   print("----------------------")
+  
 
 def on_message(client, userdata, message):
   messages = json.loads(message.payload)
@@ -139,7 +139,8 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     dev = setLocationUwb()
     p_array = findLocation(dev)
     print("client_location:",client_location_x, client_location_y)
-    distance = calcDistance(client_location, p_array) #client location = null이면 0
+    print(client_location)
+    #distance = calcDistance(client_location, p_array) #client location = null이면 0
     #distance를 회귀분석이 담긴 dynamodb에 request해서
     #response로 예상 time을 받아온다.
     
@@ -157,22 +158,17 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     print("[X,Y] = " + str(p_array)) #
     print("----------------------")
 
+    """
     button = input("마무리 버튼(1)을 누르세요: \n")
 
     if button == 1:
       end = time.time()
       thetime = end - start
       sys.exit(0)
-      """
-    else:
-      print("버튼 (1)을 눌려주세요")
-      button = input("\n")
-      """
-    
-    #print("Time Taken", f"{thetime:.5f} sec")
+    """
 
 
-    time.sleep(10)
+    time.sleep(3)
 
 main()
           
