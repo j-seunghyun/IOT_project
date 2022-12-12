@@ -3,8 +3,9 @@ import struct
 import time
 import json
 import asyncio
-import requests_async as requests
+import requests_async as request
 import base64
+import requests
 
 getDistanceUrl = 'https://ljw7pe9yp1.execute-api.ap-northeast-1.amazonaws.com/default/get/distance'
 

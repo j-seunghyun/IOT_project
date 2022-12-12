@@ -35,7 +35,7 @@ mylcd = I2C_LCD_driver.lcd()
 forEmployeeParams = {'state' : 'wait'}
 getEmployeeStateUrl = 'https://wfnmvsj0rl.execute-api.ap-northeast-1.amazonaws.com/default/get/employee/state'
 
-getDistanceUrl = ''
+getDistanceUrl = 'https://ljw7pe9yp1.execute-api.ap-northeast-1.amazonaws.com/default/get/distance'
 
 #function request get Employee list(state가 wait인)
 async def req():
@@ -43,6 +43,10 @@ async def req():
   waitEmployeeList = json.loads(response.content)
   return waitEmployeeList
 
+async def req_distance():
+  response = await requests.get(getDistanceUrl,params=None)
+  distance = json.loads(response.content)
+  return distance
 # guest (손님)
 
 # 라즈베리파이의 power가 on일때 (가정) => 켜졌을 때
@@ -233,12 +237,11 @@ def main():
 
 
         #get distance가 들어가야 한다.
-        #거리정보...
-        distance = 200
+        distance = asyncio.run(req_distance())
         # lambda로 linearRegression을 통해 시간(분) 계산
 
         #임의로 distance에 200 삽입
-        mint = gettime(W,b, 200) 
+        mint = gettime(W,b, distance)
         
         ##lcd 코드
         mylcd.lcd_clear()
