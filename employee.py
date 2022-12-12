@@ -143,7 +143,6 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     
     dev = setLocationUwb()
     p_array = findLocation(dev)
-<<<<<<< HEAD
     
 
     #distance계산이 된 다음에 post시킬 수 있도록 async
@@ -152,13 +151,6 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
     #distance post시키는 함수
     if distance != 0:
       asyncio.run(post(distance))
-=======
-    print("client_location:",client_location_x, client_location_y)
-    print(client_location)
-    #distance = calcDistance(client_location, p_array) #client location = null이면 0
-    #distance를 회귀분석이 담긴 dynamodb에 request해서
-    #response로 예상 time을 받아온다.
->>>>>>> 3037f3b5df731d8c0cce871670a9062ea9595e45
     
     ###lcd화면에 예상 시간과 손님 위치 출력
     """

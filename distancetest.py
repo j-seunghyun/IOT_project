@@ -10,7 +10,7 @@ postHostUrl = "https://0kyzkkrvkg.execute-api.ap-northeast-1.amazonaws.com/defau
 
 async def post_distance(distance):
   #calc 함수에서 계산한 distance를 post
-  response = await requests.get(postHostUrl, headers=None)
+  response = await requests.post(postHostUrl, headers=None)
   data = json.loads(response.content)
   #response = await requests.post(postHostUrl, data=distance, headers=None)
   return data
@@ -18,4 +18,4 @@ async def post_distance(distance):
 def main():
   distance = 200
   response = asyncio.run(post(distance))
-  print(json.dumps(data, ensure_ascii=False))
+  print(json.dumps(response, ensure_ascii=False))

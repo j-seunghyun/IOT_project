@@ -35,6 +35,7 @@ mylcd = I2C_LCD_driver.lcd()
 forEmployeeParams = {'state' : 'wait'}
 getEmployeeStateUrl = 'https://wfnmvsj0rl.execute-api.ap-northeast-1.amazonaws.com/default/get/employee/state'
 
+getDistanceUrl = ''
 
 #function request get Employee list(state가 wait인)
 async def req():
