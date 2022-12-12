@@ -159,8 +159,9 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
 
     #distance post시키는 함수
     if distance != 0:
-      asyncio.run(post_distance(distance, current_index))
+      response = asyncio.run(post_distance(distance, current_index))
       current_index = current_index+1
+      print(response)
     
     ###lcd화면에 예상 시간과 손님 위치 출력
     """
