@@ -24,6 +24,7 @@ Cert_File = "/home/pi/project/device_authentication/1ec7bb53fbf4890b391e5d0af3a3
 
 Client = AWSIoTPyMQTT.AWSIoTMQTTClient(Client_ID)
 shadow_device = AWSIoTPyMQTT.AWsIOTMQTTShadowClient(Client_ID, useWebsocket = True)
+my_shadow = shadow_device.deviceShadow("pi", isPersistentSubscribe, self)
 Client.configureEndpoint(Host_Name, 8883)
 Client.configureCredentials(Root_CA, Private_key, Cert_File)
 Client.configureConnectDisconnectTimeout(10)
@@ -78,7 +79,8 @@ def findLocation(dev):
 
 def customCallback(Client, userdata, message):
   messages = json.loads(message.payload)
-  client_location = messages['location']
+  client_location_x = messages['location'][0]
+  client_location_y = messages['location'][1]
   
   print("----------------------")
   print("CLIENT IS AT")
@@ -120,8 +122,9 @@ def LCD(situation):
 """
 
 def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
-  client_location = []
 
+  client_location_x = 0
+  client_location_y = 0
   #mylcd.lcd_display_string("WAITING THE CALL",1,0)
   #mylcd.lcd_display_string("STAFF ID: " + str(id) ,2,3)
   print("----------------------")
@@ -129,14 +132,13 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
   print("STAFF ID: " + str(id))
   print("----------------------")
   Client.subscribe(Guest_Thing_Name, 1, customCallback) #guest 주소 알수있음 (이것이 진행을 안해서 distance가 들어오지 않는 것)
-  shadow_device.shadowGet(customCallback, 10)
 
   while True:
     start = time.time()
     
     dev = setLocationUwb()
     p_array = findLocation(dev)
-    print("client_location:",client_location)
+    print("client_location:",client_location_x, client_location_y)
     distance = calcDistance(client_location, p_array) #client location = null이면 0
     #distance를 회귀분석이 담긴 dynamodb에 request해서
     #response로 예상 time을 받아온다.
