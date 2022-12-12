@@ -85,7 +85,8 @@ def customCallback(Client, userdata, message):
   print("----------------------")
 
 def on_message(client, userdata, message):
-   client_location = message['location']
+  messages = json.loads(message.payload)
+  client_location = messages['location']
 
 def calcDistance(client_location, p_array):
   # client_location list가 비어 있을때는 0return
@@ -127,13 +128,14 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
   print("STAFF ID: " + str(id))
   print("----------------------")
   Client.subscribe(Guest_Thing_Name, 1, customCallback) #guest 주소 알수있음 (이것이 진행을 안해서 distance가 들어오지 않는 것)
+  Client.onMessage = on_message
 
   while True:
     start = time.time()
     
     dev = setLocationUwb()
     p_array = findLocation(dev)
-    #print("client_location:",client_location)
+    print("client_location:",client_location)
     distance = calcDistance(client_location, p_array) #client location = null이면 0
     #distance를 회귀분석이 담긴 dynamodb에 request해서
     #response로 예상 time을 받아온다.
