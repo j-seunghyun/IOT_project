@@ -41,6 +41,7 @@ getDistanceUrl = 'https://ljw7pe9yp1.execute-api.ap-northeast-1.amazonaws.com/de
 async def req():
   response = await request.get(getEmployeeStateUrl, params= forEmployeeParams)
   waitEmployeeList = json.loads(response.content)
+  print("waitEmployeeList = ", waitEmployeeList)
   return waitEmployeeList
 
 async def req_distance():
@@ -137,7 +138,7 @@ def findLocation(dev):
   x_pos = struct.unpack('<i', x_pos)[0]
   x_pos = x_pos/1000
   y_pos = struct.unpack('<i', y_pos)[0]
-  y_post = y_pos/1000
+  y_pos = y_pos/1000
   z_pos = struct.unpack('<i', z_pos)[0]
   z_pos = z_pos/1000
 
@@ -197,8 +198,9 @@ def linearRegression():
 
 def gettime(W,b, distance):
 
-    dist = int(distance) / 100 #계산을 위해
+    dist = int(distance) #계산을 위해
     time = (int(dist) * W + b) / 60
+    print("time = ", time)
     return round(time) #input값    
     
 

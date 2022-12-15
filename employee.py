@@ -72,7 +72,7 @@ def findLocation(dev):
   x_pos = struct.unpack('<i', x_pos)[0]
   x_pos = x_pos/1000
   y_pos = struct.unpack('<i', y_pos)[0]
-  y_post = y_pos/1000
+  y_pos = y_pos/1000
   z_pos = struct.unpack('<i', z_pos)[0]
   z_pos = z_pos/1000
   dev.disconnect()
@@ -108,15 +108,40 @@ async def calcDistance(client_location, p_array):
     current_client_location = client_location[-1]
     a = current_client_location[0]- p_array[0]
     b = current_client_location[1]-p_array[1]
+    print(current_client_location[0])
+    print(p_array[0])
+    print(current_client_location[1])
+    print(p_array[1])
     distance = math.sqrt(a**2+b**2)
+    print(distance)
     return distance
 
+"""
+def LCD(situation):
+  if situation == 0:
+        #mylcd.lcd_display_string("CONSUMER  NEED",1,1)
+        #mylcd.lcd_display_string("PRODUCT HELP ",2,2)
+      print("CONSUMER  NEED")
+      print("PRODUCT HELP")
+
+  elif situation == 1:
+      #mylcd.lcd_display_string("CONSUMER NEED",1,0)
+      #mylcd.lcd_display_string("PLACE HELP ",2,0)
+      print("CONSUMER NEED")
+      print("PLACE HELP")
+
+  elif situation == 2:
+      #mylcd.lcd_display_string("EMERGENCY CALL",1,1)
+      print("EMERGENCY CALL")
+"""
 
 def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
 
-  
+  client_location_x = 0
+  client_location_y = 0
   current_index = 0
-  
+  #mylcd.lcd_display_string("WAITING THE CALL",1,0)
+  #mylcd.lcd_display_string("STAFF ID: " + str(id) ,2,3)
   print("----------------------")
   print("WAITING THE CALL")
   print("STAFF ID: " + str(id))
@@ -144,7 +169,24 @@ def main(): #raspberrypi 하나로만 해야하니까 lcd는 화면으로 대체
       current_index = current_index+1
       print(response)
     
-    
+    ###lcd화면에 예상 시간과 손님 위치 출력
+    """
+    situation = 0 # 임의의 상황 부여
+    LCD(situation)
+    time.sleep(2)
+    """
+
+    #mylcd.lcd_display_string("TIME TO CONSUMER",1,0)
+    #mylcd.lcd_display_string("IS " + str(mint) + " MIN",2,4)
+
+    """
+    button = input("마무리 버튼(1)을 누르세요: \n")
+
+    if button == 1:
+      end = time.time()
+      thetime = end - start
+      sys.exit(0)
+    """
 
 
     time.sleep(3)
